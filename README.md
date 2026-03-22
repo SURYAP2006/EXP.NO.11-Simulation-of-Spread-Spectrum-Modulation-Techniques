@@ -1,15 +1,80 @@
-# EXP.NO.11-Simulation-of-Spread-Spectrum-Modulation-Techniques
+## Simulation of Spread Spectrum Modulation Techniques
 
-11.Simulation of Spread Spectrum Modulation Techniques
+# NAME - SURYA P
+# REG.NO - 212223060280
+### AIM
+To simulate the process of Direct Sequence Spread Spectrum (DSSS) modulation using Binary Phase Shift Keying (BPSK).
+### SOFTWARE REQUIRED
+Python IDE with numPy and Matplotlib
+### ALGORITHMS
+Generate random binary data.   
+Create a PN sequence of length 8.  
+Perform BPSK modulation on the data (0 → -1, 1 → +1).  
+Spread the BPSK modulated signal using the PN sequence.  
+Modulate the spread signal using a BPSK carrier.  
+Plot the DSSS spread signal and the BPSK modulated carrier waveform  
 
-# AIM
+### PROGRAM
+```python
+import numpy as np
+import matplotlib.pyplot as plt
 
-# SOFTWARE REQUIRED
+#  System Parameters 
+data_length = 4
+chips_per_bit = 8
+bit_rate = 1000
+carrier_freq = 20000
+sample_rate = 160000
 
-# ALGORITHMS
+chip_rate = bit_rate * chips_per_bit
+samples_per_chip = int(sample_rate / chip_rate)
 
-# PROGRAM
+#  Generate Random Data 
+data = np.random.randint(0,2,data_length)
 
-# OUTPUT
- 
-# RESULT / CONCLUSIONS
+# Generate PN Sequence 
+pn_seq = np.random.choice([-1,1], chips_per_bit)
+
+print("Original Data Bits :", data)
+print("PN Sequence :", pn_seq)
+
+#  BPSK Mapping 
+def bpsk_map(bit):
+    return 2*bit - 1
+
+#  DSSS Spreading
+spread_signal = []
+
+for bit in data:
+    bpsk_bit = bpsk_map(bit)
+    spread_signal.extend(bpsk_bit * pn_seq)
+
+spread_signal = np.array(spread_signal)
+
+# Carrier Modulation 
+chip_samples = np.repeat(spread_signal, samples_per_chip)
+
+t = np.arange(len(chip_samples)) / sample_rate
+
+carrier = np.cos(2*np.pi*carrier_freq*t)
+
+bpsk_waveform = chip_samples * carrier
+
+#  PLOTS
+
+plt.figure(figsize=(10,8))
+
+# Spread signal
+plt.subplot(2,1,1)
+plt.step(range(len(spread_signal)), spread_signal, where='mid')
+plt.title("DSSS Spread Signal (Baseband)")
+plt.xlabel("Chip Index")
+plt.ylabel("Amplitude")
+plt.grid()
+```
+### OUTPUT
+![Screenshot 2025-05-19 182835](https://github.com/user-attachments/assets/dae670f2-2628-48da-a8ef-d9a8ca909c65)
+
+### RESULT
+
+The direct sequence spread spectrum (DSSS) signal is illustrated as a plot representing the baseband signal after it has been spread using a pseudorandom noise (PN) sequence. Additionally, the BPSK-modulated signal is depicted through a plot showcasing the modulated carrier waveform resulting from Binary Phase Shift Keying.
